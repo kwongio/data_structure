@@ -20,6 +20,7 @@ public:
         next = nullptr;
     }
 
-    node(double coefficients, int exponents) : exponents(exponents), coefficients(coefficients) {
+    node(double coefficients, int exponents) : exponents(exponents), coefficients(coefficients), next(nullptr) {
+
     }
 };

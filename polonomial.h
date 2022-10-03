@@ -1,12 +1,3 @@
-//
-// Created by rldh1 on 2022-09-30.
-//
-
-#ifndef UNTITLED5_POLONOMIAL_H
-#define UNTITLED5_POLONOMIAL_H
-
-#endif //UNTITLED5_POLONOMIAL_H
-
 #include <iostream>
 #include "list"
 
@@ -38,9 +29,9 @@ public:
 
     size_t list_length() const;
 
-    node* list_search(node *item);
+    node *list_search(node *item);
 
-    node* list_locate(int index);
+    node *list_locate(int index);
 
     void list_insert(node *newItem, int index);
 
@@ -54,9 +45,41 @@ public:
 
     void list_copy(polynomial *copy);
 
-    node *getNode(int index);
-
     bool isEmpty();
+
+    //TODO 다항식 끼리 연산
+
+    polynomial operator+(polynomial p){
+
+    }
+
+    polynomial operator-(polynomial p){
+
+    }
+
+    polynomial operator*(polynomial p){
+
+    }
+
+    polynomial operator=(polynomial p){
+
+    }
+
+    polynomial operator+=(polynomial p){
+
+    }
+    polynomial operator-=(polynomial p){
+
+    }
+    polynomial operator*=(polynomial p){
+
+    }
+
+    //TODO 출력하기
+    void show_content(){
+
+    }
+
 
 };
 
@@ -65,15 +88,13 @@ size_t polynomial::list_length() const {
 }
 
 void polynomial::list_head_insert(node *newItem) {
-    newItem->next = head->next;
-    head->next = newItem;
     head = newItem;
     length++;
 }
 
 void polynomial::list_insert(node *newItem, int index) {
-    if (!isEmpty() && index >= 0 && index <= length - 1) {
-        node *preNode = getNode(index - 1);
+    if (index >= 0 && index <= length) {
+        node *preNode = list_locate(index - 1);
         newItem->next = preNode->next;
         preNode->next = newItem;
         length++;
@@ -81,17 +102,6 @@ void polynomial::list_insert(node *newItem, int index) {
 
 }
 
-node *polynomial::getNode(int index) {
-    if (!isEmpty() && index >= 0 && index <= length - 1) {
-        node *curr = head;
-        for (int i = 0; i <= index; ++i) {
-            curr = curr->next;
-        }
-        return curr;
-    }
-    return nullptr;
-
-}
 
 bool polynomial::isEmpty() {
     return length == 0;
@@ -108,18 +118,20 @@ void polynomial::list_clear() {
 void polynomial::list_head_remove() {
     node *removeNode = head;
     head = head->next;
-    delete removeNode;
+    length--;
 }
 
 void polynomial::list_remove(int index) {
+
     if (!isEmpty() && index >= 0 && index <= length - 1) {
-        node *preNode = getNode(index - 1);
+        node *preNode = list_locate(index - 1);
         node *removeNode = preNode->next;
         preNode->next = removeNode->next;
-        delete removeNode;
+        length--;
     }
 }
 
+// TODO 값을 복사야해됨 아니면 주소값이라 같이 없어짐
 void polynomial::list_copy(polynomial *copy) {
     list_clear();
     head = copy->head;
@@ -128,24 +140,25 @@ void polynomial::list_copy(polynomial *copy) {
 }
 
 node *polynomial::list_locate(int index) {
+
     if (isEmpty() || index < 0 || index >= length) {
         return nullptr;
     }
-    node* currNode = head;
-    for (int i = 0; i <= index; ++i) {
+    node *currNode = head;
+    for (int i = 0; i < index; ++i) {
         currNode = currNode->next;
     }
     return currNode;
 }
 
 node *polynomial::list_search(node *item) {
-
-    node* currNode = head;
+    node *currNode = head;
     for (int i = 0; i < length; ++i) {
-        currNode = currNode->next;
-        if (currNode->exponents == item->exponents && currNode->coefficients == item->coefficients) {
+        if (currNode == item) {
             return currNode;
         }
+        currNode = currNode->next;
+
     }
     return nullptr;
 }

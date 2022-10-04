@@ -1,30 +1,65 @@
 #include <iostream>
-#include "list"
 
 using namespace std;
 
 class polynomial {
-private:
-    node *head;
-    size_t length;
+
 public:
+    node *head = nullptr;
+    int size = 0;
+
     polynomial() {
         head = nullptr;
-        length = 0;
+        size = 0;
     };
 
     polynomial(double a0) {
+        head = new node(a0, 0);
+        size = 1;
 
     };
 
     polynomial(const polynomial &source) {
         head = source.head;
-        length = source.length;
+        size = source.size;
     };
 
     ~polynomial() {
-        list_clear();
+        cout << "�ѱ�" << endl;
+        size = 0;
         delete head;
+
+    }
+
+    polynomial &operator+(polynomial &p1) {
+
+    }
+
+    polynomial operator-(polynomial p) {
+
+    }
+
+    polynomial operator*(polynomial p) {
+
+    }
+
+    polynomial operator=(polynomial p) {
+        list_copy(p);
+        return *this;
+
+
+    }
+
+    polynomial operator+=(polynomial p) {
+
+    }
+
+    polynomial operator-=(polynomial p) {
+
+    }
+
+    polynomial operator*=(polynomial p) {
+
     }
 
     size_t list_length() const;
@@ -43,109 +78,110 @@ public:
 
     void list_clear();
 
-    void list_copy(polynomial *copy);
+    void list_copy(polynomial &copy);
 
     bool isEmpty();
 
-    //TODO 다항식 끼리 연산
 
-    polynomial operator+(polynomial p){
 
+    void show_content(node *&head) {
+        node *curr = head;
+        for (int i = 0; i < list_length(); ++i) {
+            cout << curr->coefficients << "x^" << curr->exponents;
+            if (curr->next != nullptr) {
+                if (curr->next->coefficients >= 0) {
+                    cout << "+";
+                }
+            }
+            curr = curr->next;
+        }
+        cout << "" << endl;
     }
 
-    polynomial operator-(polynomial p){
-
+    double eval(int x) {
+        node *curr = head;
+        double sum = 0;
+        while (curr != nullptr) {
+            double result = 1.0;
+            for (int i = 0; i < curr->exponents; ++i) {
+                result *= curr->coefficients * x;
+            }
+            sum += result;
+            curr = curr->next;
+        }
+        return sum;
     }
-
-    polynomial operator*(polynomial p){
-
-    }
-
-    polynomial operator=(polynomial p){
-
-    }
-
-    polynomial operator+=(polynomial p){
-
-    }
-    polynomial operator-=(polynomial p){
-
-    }
-    polynomial operator*=(polynomial p){
-
-    }
-
-    //TODO 출력하기
-    void show_content(){
-
-    }
-
-
 };
 
 size_t polynomial::list_length() const {
-    return length;
+    return size;
 }
 
 void polynomial::list_head_insert(node *newItem) {
     head = newItem;
-    length++;
-}
-
-void polynomial::list_insert(node *newItem, int index) {
-    if (index >= 0 && index <= length) {
-        node *preNode = list_locate(index - 1);
-        newItem->next = preNode->next;
-        preNode->next = newItem;
-        length++;
-    }
-
+    size++;
 }
 
 
 bool polynomial::isEmpty() {
-    return length == 0;
+    return size == 0;
 }
 
 void polynomial::list_clear() {
-    for (int i = 0; i < length; ++i) {
-        list_remove(i);
-    }
-    length = 0;
-    head = nullptr;
+    size = 0;
+    delete head;
 }
 
 void polynomial::list_head_remove() {
     node *removeNode = head;
     head = head->next;
-    length--;
+    size--;
+    delete removeNode;
 }
 
 void polynomial::list_remove(int index) {
 
-    if (!isEmpty() && index >= 0 && index <= length - 1) {
+    if (!isEmpty() && index >= 0 && index <= size - 1) {
         node *preNode = list_locate(index - 1);
         node *removeNode = preNode->next;
         preNode->next = removeNode->next;
-        length--;
+        size--;
+        delete removeNode;
     }
 }
 
-// TODO 값을 복사야해됨 아니면 주소값이라 같이 없어짐
-void polynomial::list_copy(polynomial *copy) {
-    list_clear();
-    head = copy->head;
-    length = copy->length;
+void polynomial::list_insert(node *newItem, int index) {
+    if (index >= 0 && index <= size) {
+        node *preNode = list_locate(index - 1);
+        newItem->next = preNode->next;
+        preNode->next = newItem;
+        size++;
+    }
+}
 
+void polynomial::list_copy(polynomial &copy) {
+    if (copy.isEmpty()) {
+        return;
+    }
+    list_clear();
+    node *temp = copy.head;
+
+
+    list_head_insert(new node(copy.head->coefficients, copy.head->exponents));
+    temp = temp->next;
+
+    while (temp != nullptr) {
+        list_insert(new node(temp->coefficients, temp->exponents), size);
+        temp = temp->next;
+    }
 }
 
 node *polynomial::list_locate(int index) {
-
-    if (isEmpty() || index < 0 || index >= length) {
+    if (isEmpty() || index < 0 || index >= size) {
         return nullptr;
     }
     node *currNode = head;
-    for (int i = 0; i < index; ++i) {
+    for (int i = 0; i < index; i++) {
         currNode = currNode->next;
     }
     return currNode;
@@ -153,7 +189,7 @@ node *polynomial::list_locate(int index) {
 
 node *polynomial::list_search(node *item) {
     node *currNode = head;
-    for (int i = 0; i < length; ++i) {
+    for (int i = 0; i < size; ++i) {
         if (currNode == item) {
             return currNode;
         }
@@ -162,6 +198,8 @@ node *polynomial::list_search(node *item) {
     }
     return nullptr;
 }
+
+
 
 
 

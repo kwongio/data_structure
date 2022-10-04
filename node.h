@@ -1,18 +1,11 @@
-//
-// Created by rldh1 on 2022-09-25.
-//
-
-#ifndef UNTITLED5_SUB_H
-#define UNTITLED5_SUB_H
-
-#endif //UNTITLED5_SUB_H
-
+#include <ostream>
+using namespace std;
 
 class node {
 public:
-    double coefficients;
-    unsigned exponents;
-    node *next;
+    double coefficients = 0.0;
+    unsigned exponents = 0 ;
+    node *next = nullptr;
 
     node() {
         coefficients = 0;
@@ -20,7 +13,20 @@ public:
         next = nullptr;
     }
 
-    node(double coefficients, int exponents) : exponents(exponents), coefficients(coefficients), next(nullptr) {
+    node(double coefficients, int exponents) : coefficients(coefficients), exponents(exponents), next(nullptr) {
+    }
+
+     ~node() {
+        cout << "»ç¶óÁü?" << endl;
+         delete next;
 
     }
+
+
+    void print() {
+        cout << "coefficients" << coefficients << endl;
+        cout << "exponents" << exponents << endl;
+    }
+
+
 };

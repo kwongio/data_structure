@@ -25,7 +25,7 @@ public:
     };
 
     ~polynomial() {
-        cout << "한글" << endl;
+        cout << "poly" << endl;
         size = 0;
         delete head;
 
@@ -43,14 +43,53 @@ public:
 
     }
 
-    polynomial operator=(polynomial p) {
-        list_copy(p);
-        return *this;
+    void operator=(polynomial &p) {
+        list_clear();
+        node *temp = p.head;
+        list_head_insert(new node(p.head->coefficients, p.head->exponents));
+        temp = temp->next;
 
-
+        while (temp != nullptr) {
+            list_insert(new node(temp->coefficients, temp->exponents), size);
+            temp = temp->next;
+        }
     }
 
-    polynomial operator+=(polynomial p) {
+
+    //계수정렬로 계산하기
+    void operator+=(polynomial p) {
+
+        int maxExponent = 0;
+
+        //가장 큰 계수
+        if (p.head->exponents >= head->exponents) {
+            maxExponent = p.head->exponents;
+        } else {
+            maxExponent = head->exponents;
+        }
+
+
+        cout << "max:" << maxExponent << endl;
+
+
+        auto arr = new double[maxExponent + 1];
+        node *curr = p.head;
+        while (curr != nullptr) {
+            arr[curr->exponents] += curr->coefficients;
+            curr = curr->next;
+        }
+
+        curr = head;
+        while (curr != nullptr) {
+            arr[curr->exponents] += curr->coefficients;
+            curr = curr->next;
+        }
+
+
+        for (int i = 0; i <= maxExponent; ++i) {
+            cout << arr[i]  << "i" << endl;
+        }
+
 
     }
 
@@ -62,7 +101,7 @@ public:
 
     }
 
-    size_t list_length() const;
+    int list_length() const;
 
     node *list_search(node *item);
 
@@ -78,10 +117,9 @@ public:
 
     void list_clear();
 
-    void list_copy(polynomial &copy);
+    void list_copy(polynomial copy);
 
     bool isEmpty();
-
 
 
     void show_content(node *&head) {
@@ -102,18 +140,24 @@ public:
         node *curr = head;
         double sum = 0;
         while (curr != nullptr) {
-            double result = 1.0;
-            for (int i = 0; i < curr->exponents; ++i) {
-                result *= curr->coefficients * x;
+            if (curr->coefficients == 0) {
+                sum += 1;
+            } else {
+                double result = 1.0;
+                for (int i = 0; i < curr->exponents; ++i) {
+                    result *= curr->coefficients * x;
+                }
+                sum += result;
+                curr = curr->next;
             }
-            sum += result;
-            curr = curr->next;
+
+
         }
         return sum;
     }
 };
 
-size_t polynomial::list_length() const {
+int polynomial::list_length() const {
     return size;
 }
 
@@ -159,7 +203,7 @@ void polynomial::list_insert(node *newItem, int index) {
     }
 }
 
-void polynomial::list_copy(polynomial &copy) {
+void polynomial::list_copy(polynomial copy) {
     if (copy.isEmpty()) {
         return;
     }

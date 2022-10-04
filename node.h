@@ -17,7 +17,7 @@ public:
     }
 
      ~node() {
-        cout << "»ç¶óÁü?" << endl;
+        cout << "node" << endl;
          delete next;
 
     }
